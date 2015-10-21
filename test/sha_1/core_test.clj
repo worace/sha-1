@@ -23,8 +23,14 @@
   (str (padded 8 (int \a))
        (padded 8 (int \b))
        "1"
-       (apply str (repeat 443 "0"))
+       (apply str (repeat 431 "0"))
        (padded 64 2)))
 
+(deftest test-congruence-bits
+  (is (= (apply str (repeat 443 "0"))
+         (congruence-bits "11111"))))
+
 (deftest test-padded-message
+  (is (= 512 (count prepped-ab)))
+  (is (= (count prepped-ab) (count (prep-message "ab"))))
   (is (= prepped-ab (prep-message "ab"))))
