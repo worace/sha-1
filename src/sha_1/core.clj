@@ -27,3 +27,19 @@
            msg-bits
            (congruence-bits msg-bits)
            (padded 64 (count msg)))))
+
+(defn msg->bytes [msg]
+  (byte-array (map (comp byte int) msg)))
+
+(def block-bit-length 512)
+(def block-byte-length (/ 8 block-bit-length))
+(def message-length-bits 64)
+(def message-length-bytes (/ 8 64))
+
+(defn padding-bytes [msg-bytes]
+  (let [mod-offset (- 56 (mod (count msg-bytes) 64))
+        bytes-needed (if (< mod-offset 0)
+                       (+ mod-offset 64)
+                       mod-offset)]
+    (byte-array
+     (take bytes-needed (repeat 0)))))

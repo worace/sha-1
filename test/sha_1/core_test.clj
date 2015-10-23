@@ -34,3 +34,20 @@
   (is (= 512 (count prepped-ab)))
   (is (= (count prepped-ab) (count (prep-message "ab"))))
   (is (= prepped-ab (prep-message "ab"))))
+
+(deftest test-msg-bytes
+  (is (= 2 (count (msg->bytes "ab")))))
+
+(deftest test-padding-length
+  (is (= 54 (count (padding-bytes (msg->bytes "ab"))))))
+
+(deftest test-padding-longer-msg
+  ; 520 bits, so wraps around
+  (let [msg (apply str (take 65 (repeat "a")))
+        mb (msg->bytes msg)]
+    (is (= 55 (count (padding-bytes mb))))))
+
+(deftest test-padding-448-512-msg
+  (let [msg (apply str (take 57 (repeat "a")))
+        mb (msg->bytes msg)]
+    (is (= 63 (count (padding-bytes mb))))))
