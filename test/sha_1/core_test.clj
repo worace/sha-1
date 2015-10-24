@@ -51,3 +51,8 @@
   (let [msg (apply str (take 57 (repeat "a")))
         mb (msg->bytes msg)]
     (is (= 63 (count (padding-bytes mb))))))
+
+(deftest test-msg-length-bytes
+  (is (= 8 (count (msg-length-bytes "a"))))
+  (is (= (map bstring (byte-array (concat (take 7 (repeat 0)) [1])))
+         (map bstring (msg-length-bytes "a")))))

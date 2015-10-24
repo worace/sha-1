@@ -43,3 +43,19 @@
                        mod-offset)]
     (byte-array
      (take bytes-needed (repeat 0)))))
+
+(defn long-empty-bytes-count [n]
+  (int (/ (Long/numberOfLeadingZeros n) 8)))
+
+(defn long->bytes [n]
+  (loop [n n
+         bytes (list)]
+    (if (= 0 n)
+      bytes
+      (recur (bit-shift-right n 8) (conj bytes (bit-and n 0xF))))))
+
+(defn msg-length-bytes [msg]
+  (let [pad-count (long-empty-bytes-count (count msg))
+        empty-bytes (take pad-count (repeat 0))
+        filled-bytes (long->bytes (count msg))]
+    (byte-array (concat empty-bytes filled-bytes))))
